@@ -1,11 +1,12 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import model.Strategy;
 import model.BetStyle;
 import model.BetType;
+import model.Strategy;
 import service.StrategyService;
 
 public class Main {
@@ -20,9 +21,9 @@ public class Main {
 				"1号艇単勝",
 				BetType.WIN,
 				BetStyle.NORMAL,
-				List.of(1),
-				List.of(),
-				List.of(),
+				new ArrayList<>(List.of(1)),
+				new ArrayList<>(),
+				new ArrayList<>(),
 				500);
 
 		Strategy strategy02 = new Strategy(
@@ -30,9 +31,9 @@ public class Main {
 				"1号艇軸3連単",
 				BetType.TRIFECTA,
 				BetStyle.FORMATION,
-				List.of(1),
-				List.of(2, 3),
-				List.of(2, 3, 4),
+				new ArrayList<>(List.of(1)),
+				new ArrayList<>(List.of(2, 3)),
+				new ArrayList<>(List.of(2, 3, 4)),
 				100);
 
 		strategyService01.addStrategy(strategy01);
@@ -99,3 +100,4 @@ public class Main {
 		System.out.println("選択してください：");
 		System.out.println(">");
 	}
+}
