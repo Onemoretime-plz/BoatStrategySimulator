@@ -16,6 +16,7 @@ public class Main {
 
 		StrategyService strategyService01 = new StrategyService();
 
+		// サンプル戦略01おインスタンス化
 		Strategy strategy01 = new Strategy(
 				1,
 				"1号艇単勝",
@@ -26,6 +27,7 @@ public class Main {
 				new ArrayList<>(),
 				500);
 
+		// サンプル戦略02インスタンス化
 		Strategy strategy02 = new Strategy(
 				2,
 				"1号艇軸3連単",
@@ -36,6 +38,7 @@ public class Main {
 				new ArrayList<>(List.of(2, 3, 4)),
 				100);
 
+		// サンプル戦略インスタンス登録
 		strategyService01.addStrategy(strategy01);
 		strategyService01.addStrategy(strategy02);
 
@@ -95,25 +98,30 @@ public class Main {
 
 				System.out.println("メインメニューへ戻ります。");
 
-			} else {
+			} else
 
 				System.out.println("0から3の整数を入力してください。");
 
-			}
-
-		} else if (menuChoice == 2) {
-
-		} else if (menuChoice == 3) {
-
-		} else if (menuChoice == 0) {
-
-			System.out.println("終了します。");
-
-		} else {
-			System.out.println("0から3の整数を入力してください。");
 		}
 
-		scanner.close();
+	}else if(menuChoice==2)
+
+	{
+
+	}else if(menuChoice==3)
+	{
+
+	}else if(menuChoice==0)
+	{
+
+		System.out.println("終了します。");
+
+	}else
+	{
+		System.out.println("0から3の整数を入力してください。");
+	}
+
+	scanner.close();
 	}
 
 	public static void showMainMenu() {

@@ -42,4 +42,18 @@ public class StrategyService {
 
 		return true;
 	}
+
+	public boolean updateStrategy(int id, String newName, int newStake) {
+
+		Strategy strategy = findById(id);
+
+		if (strategy == null) {
+			return false;
+		}
+
+		strategy.setStrategyName(newName);
+		strategy.setStake(newStake);
+		return true;
+
+	}
 }
