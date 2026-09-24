@@ -106,10 +106,12 @@ public class Main {
 
 							int newStake = scanner.nextInt();
 
-							strategyService01.updateStrategy(iDChoice, newName, newStake);
-
 							System.out.println();
-							System.out.println("戦略を更新しました。");
+							if (strategyService01.updateStrategy(iDChoice, newName, newStake)) {
+								System.out.println("戦略を更新しました。");
+							} else {
+								System.out.println("戦略の更新に失敗しました。");
+							}
 
 							returnStrategyMenu();
 
@@ -128,7 +130,18 @@ public class Main {
 
 							if (deleteChoice == 1) {
 
-								strategyService01.deleteStrategy(iDChoice);
+								System.out.println();
+
+								if (strategyService01.deleteStrategy(iDChoice)) {
+
+									System.out.println("戦略を削除しました。");
+
+								} else {
+
+									System.out.println("削除対象がありません。");
+
+								}
+
 								System.out.println();
 								System.out.println("戦略を削除しました。");
 
@@ -217,7 +230,13 @@ public class Main {
 		System.out.println("戦略名      ：" + strategy.getStrategyName());
 		System.out.println("券種        ：" + strategy.getBetType());
 		System.out.println("買い方      ：" + strategy.getBetStyle());
-		System.out.println("買い目      ：" + strategy.getFirstChoices());
+		System.out.println("1着買い目      ：" + strategy.getFirstChoices());
+		if (!strategy.getSecondChoices().isEmpty()) {
+			System.out.println("2着買い目      ：" + strategy.getSecondChoices());
+		}
+		if (!strategy.getThirdChoices().isEmpty()) {
+			System.out.println("3着買い目      ：" + strategy.getThirdChoices());
+		}
 		System.out.println("1点賭け金   ：" + strategy.getStake() + "円");
 		System.out.println();
 		System.out.println("----------------------------");
