@@ -81,7 +81,7 @@ public class Main {
 					System.out.println("----------------------------");
 					System.out.println();
 					System.out.println("詳細画面へ進む場合は 『" + searchID + "』 を入力してください。");
-					System.out.print(">");
+					System.out.print("> ");
 
 					int iDChoice = scanner.nextInt();
 
@@ -93,11 +93,54 @@ public class Main {
 						// 編集
 						if (detailChoice == 1) {
 
+							System.out.println("===== 戦略編集 =====");
+							System.out.println();
+							System.out.println("新しい戦略名を入力してください。");
+							System.out.print("> ");
+
+							String newName = scanner.next();
+
+							System.out.println();
+							System.out.println("新しい1点賭け金を入力してください。");
+							System.out.print("> ");
+
+							int newStake = scanner.nextInt();
+
+							strategyService01.updateStrategy(iDChoice, newName, newStake);
+
+							System.out.println();
+							System.out.println("戦略を更新しました。");
+
 							// 削除
 						} else if (detailChoice == 2) {
 
+							System.out.println("この戦略を削除しますか？");
+							System.out.println();
+							System.out.println("1. 削除する");
+							System.out.println("0. キャンセル");
+							System.out.println();
+
+							System.out.print("> ");
+
+							int deleteChoice = scanner.nextInt();
+
+							if (deleteChoice == 1) {
+
+								strategyService01.deleteStrategy(iDChoice);
+								System.out.println();
+								System.out.println("戦略を削除しました。");
+
+							} else if (deleteChoice == 0) {
+
+								System.out.println();
+								System.out.println("削除をキャンセルしました。");
+
+							}
+
 							// メニューへ戻る
 						} else if (detailChoice == 0) {
+
+							returnStrategyMenu();
 
 						}
 					}
@@ -113,7 +156,7 @@ public class Main {
 
 			} else if (strategyMenuChoice == 0) {
 
-				System.out.println("メインメニューへ戻ります。");
+				returnMainMenu();
 
 			} else {
 
@@ -146,7 +189,7 @@ public class Main {
 		System.out.println("0. 終了");
 		System.out.println();
 		System.out.println("選択してください：");
-		System.out.print(">");
+		System.out.print("> ");
 
 	}
 
@@ -176,6 +219,16 @@ public class Main {
 		System.out.println("0. 戦略一覧へ戻る");
 		System.out.println();
 		System.out.println("選択してください：");
-		System.out.print(">");
+		System.out.print("> ");
+	}
+
+	public static void returnMainMenu() {
+		System.out.println("メインメニューへ戻ります");
+
+	}
+
+	public static void returnStrategyMenu() {
+		System.out.println("戦略一覧へ戻ります");
+
 	}
 }
