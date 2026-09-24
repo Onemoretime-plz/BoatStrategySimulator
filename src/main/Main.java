@@ -80,7 +80,7 @@ public class Main {
 					System.out.println();
 					System.out.println("----------------------------");
 					System.out.println();
-					System.out.println("詳細画面へ進む場合は 『" + searchID + "』 を入力してください。");
+					System.out.println("詳細画面へ進む場合は 『 1 』 を入力してください。");
 					System.out.print("> ");
 
 					int iDChoice = scanner.nextInt();
@@ -98,7 +98,7 @@ public class Main {
 							System.out.println("新しい戦略名を入力してください。");
 							System.out.print("> ");
 
-							String newName = scanner.next();
+							String newName = scanner.nextLine();
 
 							System.out.println();
 							System.out.println("新しい1点賭け金を入力してください。");
@@ -123,7 +123,7 @@ public class Main {
 							System.out.println("1. 削除する");
 							System.out.println("0. キャンセル");
 							System.out.println();
-
+							System.out.println("選択してください：");
 							System.out.print("> ");
 
 							int deleteChoice = scanner.nextInt();
@@ -142,26 +142,18 @@ public class Main {
 
 								}
 
-								System.out.println();
-								System.out.println("戦略を削除しました。");
-
-								returnStrategyMenu();
-
 							} else if (deleteChoice == 0) {
 
 								System.out.println();
 								System.out.println("削除をキャンセルしました。");
-
-								returnStrategyMenu();
 
 							}
 
 							// メニューへ戻る
 						} else if (detailChoice == 0) {
 
-							returnStrategyMenu();
-
 						}
+						returnStrategyMenu();
 					}
 
 				} else {
@@ -221,6 +213,9 @@ public class Main {
 		System.out.println("2. 戦略ID検索");
 		System.out.println("3. 新規戦略登録");
 		System.out.println("0. メニューへ戻る");
+		System.out.println();
+		System.out.println("選択してください：");
+		System.out.print("> ");
 	}
 
 	public static void showStrategyDetail(Strategy strategy) {
