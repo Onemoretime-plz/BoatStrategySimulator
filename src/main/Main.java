@@ -86,7 +86,7 @@ public class Main {
 					int iDChoice = scanner.nextInt();
 
 					if (iDChoice == searchID) {
-						showStrategyDetail(strategyService01.findById(searchID));
+						showStrategyDetail(foundStrategy);
 
 						int detailChoice = scanner.nextInt();
 
@@ -100,12 +100,11 @@ public class Main {
 						} else if (detailChoice == 0) {
 
 						}
-
-					} else {
-
-						System.out.println("戦略が見つかりません。");
-						System.out.println();
 					}
+
+				} else {
+					System.out.println("戦略が見つかりません。");
+					System.out.println();
 				}
 
 			} else if (strategyMenuChoice == 3) {
