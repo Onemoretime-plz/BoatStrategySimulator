@@ -16,7 +16,7 @@ public class Main {
 
 		StrategyService strategyService01 = new StrategyService();
 
-		// サンプル戦略01おインスタンス化
+		// サンプル戦略01インスタンス化
 		Strategy strategy01 = new Strategy(
 				1,
 				"1号艇単勝",
@@ -77,51 +77,63 @@ public class Main {
 					System.out.println("ID: " + foundStrategy.getStrategyId());
 					System.out.println("戦略名: " + foundStrategy.getStrategyName());
 
-				} else {
-
-					System.out.println("戦略が見つかりません。");
 					System.out.println();
+					System.out.println("----------------------------");
+					System.out.println();
+					System.out.println("詳細画面へ進む場合は 『" + searchID + "』 を入力してください。");
+					System.out.print(">");
+
+					int iDChoice = scanner.nextInt();
+
+					if (iDChoice == searchID) {
+						showStrategyDetail(strategyService01.findById(searchID));
+
+						int detailChoice = scanner.nextInt();
+
+						// 編集
+						if (detailChoice == 1) {
+
+							// 削除
+						} else if (detailChoice == 2) {
+
+							// メニューへ戻る
+						} else if (detailChoice == 0) {
+
+						}
+
+					} else {
+
+						System.out.println("戦略が見つかりません。");
+						System.out.println();
+					}
 				}
 
 			} else if (strategyMenuChoice == 3) {
 
-				System.out.println("削除するIDを入力してください。");
-				int deleteID = scanner.nextInt();
-
-				if (strategyService01.deleteStrategy(deleteID)) {
-					System.out.println("戦略を削除しました。");
-				} else {
-					System.out.println("削除対象の戦略がありません。");
-				}
+				System.out.println("新規戦略登録");
 
 			} else if (strategyMenuChoice == 0) {
 
 				System.out.println("メインメニューへ戻ります。");
 
-			} else
+			} else {
 
 				System.out.println("0から3の整数を入力してください。");
+			}
 
+		} else if (menuChoice == 2) {
+
+		} else if (menuChoice == 3) {
+
+		} else if (menuChoice == 0) {
+
+			System.out.println("終了します。");
+
+		} else {
+			System.out.println("0から3の整数を入力してください。");
 		}
 
-	}else if(menuChoice==2)
-
-	{
-
-	}else if(menuChoice==3)
-	{
-
-	}else if(menuChoice==0)
-	{
-
-		System.out.println("終了します。");
-
-	}else
-	{
-		System.out.println("0から3の整数を入力してください。");
-	}
-
-	scanner.close();
+		scanner.close();
 	}
 
 	public static void showMainMenu() {
@@ -144,7 +156,7 @@ public class Main {
 		System.out.println();
 		System.out.println("1. 戦略一覧");
 		System.out.println("2. 戦略ID検索");
-		System.out.println("3. 戦略削除");
+		System.out.println("3. 新規戦略登録");
 		System.out.println("0. メニューへ戻る");
 	}
 
@@ -165,6 +177,6 @@ public class Main {
 		System.out.println("0. 戦略一覧へ戻る");
 		System.out.println();
 		System.out.println("選択してください：");
-		System.out.println(">");
+		System.out.print(">");
 	}
 }
