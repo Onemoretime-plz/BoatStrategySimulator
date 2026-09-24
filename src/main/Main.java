@@ -111,6 +111,8 @@ public class Main {
 							System.out.println();
 							System.out.println("戦略を更新しました。");
 
+							returnStrategyMenu();
+
 							// 削除
 						} else if (detailChoice == 2) {
 
@@ -130,10 +132,14 @@ public class Main {
 								System.out.println();
 								System.out.println("戦略を削除しました。");
 
+								returnStrategyMenu();
+
 							} else if (deleteChoice == 0) {
 
 								System.out.println();
 								System.out.println("削除をキャンセルしました。");
+
+								returnStrategyMenu();
 
 							}
 
@@ -148,6 +154,8 @@ public class Main {
 				} else {
 					System.out.println("戦略が見つかりません。");
 					System.out.println();
+
+					returnStrategyMenu();
 				}
 
 			} else if (strategyMenuChoice == 3) {
