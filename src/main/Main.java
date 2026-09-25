@@ -534,9 +534,7 @@ public class Main {
 
 		} else if (betStyleChoice == 2) {
 
-			System.out.println();
-			System.out.println("フォーメーション登録は後に実装します。");
-			return;
+			betStyle = BetStyle.FORMATION;
 
 		} else if (betStyleChoice == 3) {
 
@@ -551,93 +549,145 @@ public class Main {
 		}
 
 		// 買い目格納用List
+		// 買い目格納用List
 		List<Integer> firstChoices = new ArrayList<>();
 		List<Integer> secondChoices = new ArrayList<>();
 		List<Integer> thirdChoices = new ArrayList<>();
 
 		System.out.println();
 
-		// 券種によって買い目入力を変更
-		if (betType == BetType.WIN || betType == BetType.PLACE) {
+		if (betStyle == BetStyle.NORMAL) {
 
-			System.out.println("艇番を入力してください。");
-			System.out.print("> ");
+			if (betType == BetType.WIN || betType == BetType.PLACE) {
 
-			int boat = scanner.nextInt();
+				System.out.println("艇番を入力してください。");
+				System.out.print("> ");
 
-			firstChoices.add(boat);
+				int boat = scanner.nextInt();
 
-		} else if (betType == BetType.EXACTA) {
+				firstChoices.add(boat);
 
-			System.out.println("1着艇を入力してください。");
-			System.out.print("> ");
+			} else if (betType == BetType.EXACTA) {
 
-			int first = scanner.nextInt();
+				System.out.println("1着艇を入力してください。");
+				System.out.print("> ");
+				int first = scanner.nextInt();
 
-			System.out.println("2着艇を入力してください。");
-			System.out.print("> ");
+				System.out.println("2着艇を入力してください。");
+				System.out.print("> ");
+				int second = scanner.nextInt();
 
-			int second = scanner.nextInt();
+				firstChoices.add(first);
+				secondChoices.add(second);
 
-			firstChoices.add(first);
-			secondChoices.add(second);
+			} else if (betType == BetType.TRIFECTA) {
 
-		} else if (betType == BetType.TRIFECTA) {
+				System.out.println("1着艇を入力してください。");
+				System.out.print("> ");
+				int first = scanner.nextInt();
 
-			System.out.println("1着艇を入力してください。");
-			System.out.print("> ");
+				System.out.println("2着艇を入力してください。");
+				System.out.print("> ");
+				int second = scanner.nextInt();
 
-			int first = scanner.nextInt();
+				System.out.println("3着艇を入力してください。");
+				System.out.print("> ");
+				int third = scanner.nextInt();
 
-			System.out.println("2着艇を入力してください。");
-			System.out.print("> ");
+				firstChoices.add(first);
+				secondChoices.add(second);
+				thirdChoices.add(third);
 
-			int second = scanner.nextInt();
+			} else if (betType == BetType.QUINELLA) {
 
-			System.out.println("3着艇を入力してください。");
-			System.out.print("> ");
+				System.out.println("1艇目を入力してください。");
+				System.out.print("> ");
+				int first = scanner.nextInt();
 
-			int third = scanner.nextInt();
+				System.out.println("2艇目を入力してください。");
+				System.out.print("> ");
+				int second = scanner.nextInt();
 
-			firstChoices.add(first);
-			secondChoices.add(second);
-			thirdChoices.add(third);
+				firstChoices.add(first);
+				secondChoices.add(second);
 
-		} else if (betType == BetType.QUINELLA) {
+			} else if (betType == BetType.TRIO) {
 
-			System.out.println("1艇目を入力してください。");
-			System.out.print("> ");
+				System.out.println("1艇目を入力してください。");
+				System.out.print("> ");
+				int first = scanner.nextInt();
 
-			int first = scanner.nextInt();
+				System.out.println("2艇目を入力してください。");
+				System.out.print("> ");
+				int second = scanner.nextInt();
 
-			System.out.println("2艇目を入力してください。");
-			System.out.print("> ");
+				System.out.println("3艇目を入力してください。");
+				System.out.print("> ");
+				int third = scanner.nextInt();
 
-			int second = scanner.nextInt();
+				firstChoices.add(first);
+				secondChoices.add(second);
+				thirdChoices.add(third);
+			}
 
-			firstChoices.add(first);
-			secondChoices.add(second);
+		} else if (betStyle == BetStyle.FORMATION) {
 
-		} else if (betType == BetType.TRIO) {
+			if (betType == BetType.WIN
+					|| betType == BetType.PLACE) {
 
-			System.out.println("1艇目を入力してください。");
-			System.out.print("> ");
+				System.out.println(
+						"単勝・複勝ではフォーメーションを使用できません。");
 
-			int first = scanner.nextInt();
+				return;
 
-			System.out.println("2艇目を入力してください。");
-			System.out.print("> ");
+			} else if (betType == BetType.EXACTA) {
 
-			int second = scanner.nextInt();
+				firstChoices = inputBoatChoices(
+						scanner,
+						"1着候補を入力してください。");
 
-			System.out.println("3艇目を入力してください。");
-			System.out.print("> ");
+				secondChoices = inputBoatChoices(
+						scanner,
+						"2着候補を入力してください。");
 
-			int third = scanner.nextInt();
+			} else if (betType == BetType.TRIFECTA) {
 
-			firstChoices.add(first);
-			secondChoices.add(second);
-			thirdChoices.add(third);
+				firstChoices = inputBoatChoices(
+						scanner,
+						"1着候補を入力してください。");
+
+				secondChoices = inputBoatChoices(
+						scanner,
+						"2着候補を入力してください。");
+
+				thirdChoices = inputBoatChoices(
+						scanner,
+						"3着候補を入力してください。");
+
+			} else if (betType == BetType.QUINELLA) {
+
+				firstChoices = inputBoatChoices(
+						scanner,
+						"1艇目の候補を入力してください。");
+
+				secondChoices = inputBoatChoices(
+						scanner,
+						"2艇目の候補を入力してください。");
+
+			} else if (betType == BetType.TRIO) {
+
+				firstChoices = inputBoatChoices(
+						scanner,
+						"1艇目の候補を入力してください。");
+
+				secondChoices = inputBoatChoices(
+						scanner,
+						"2艇目の候補を入力してください。");
+
+				thirdChoices = inputBoatChoices(
+						scanner,
+						"3艇目の候補を入力してください。");
+			}
 		}
 
 		System.out.println();
@@ -669,5 +719,33 @@ public class Main {
 		System.out.println("戦略名: " + newStrategy.getStrategyName());
 		System.out.println();
 
+	}
+
+	public static List<Integer> inputBoatChoices(
+			Scanner scanner,
+			String message) {
+
+		List<Integer> choices = new ArrayList<>();
+
+		System.out.println(message);
+		System.out.println(
+				"艇番を続けて入力してください。");
+		System.out.println(
+				"入力を終了する場合は0を入力してください。");
+
+		while (true) {
+
+			System.out.print("> ");
+
+			int boat = scanner.nextInt();
+
+			if (boat == 0) {
+				break;
+			}
+
+			choices.add(boat);
+		}
+
+		return choices;
 	}
 }
