@@ -1,5 +1,6 @@
 package main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -11,6 +12,7 @@ import model.SimulationSummary;
 import model.Strategy;
 import service.SimulationService;
 import service.StrategyService;
+import util.CsvLoader;
 
 public class Main {
 
@@ -18,6 +20,9 @@ public class Main {
 		Scanner scanner = new Scanner(System.in);
 
 		StrategyService strategyService01 = new StrategyService();
+
+		// 読み込んだレースデータを保持
+		List<RaceResult> raceResults = new ArrayList<>();
 
 		// サンプル戦略01インスタンス化
 		Strategy strategy01 = new Strategy(
@@ -150,6 +155,16 @@ public class Main {
 				System.out.println("===== シミュレーション =====");
 				System.out.println();
 
+				// CSVが読み込まれているか確認
+				if (raceResults.isEmpty()) {
+
+					System.out.println("レースデータがありません。");
+					System.out.println("先にCSVをインポートしてください。");
+					System.out.println();
+
+					continue;
+				}
+
 				System.out.println("使用する戦略IDを入力してください。");
 				System.out.print("> ");
 
@@ -161,61 +176,9 @@ public class Main {
 
 					System.out.println("戦略が見つかりません。");
 					System.out.println();
+
 					continue;
 				}
-
-				// 仮レースデータ
-				List<RaceResult> raceResults = new ArrayList<>();
-
-				raceResults.add(
-						new RaceResult(
-								"2026-09-25",
-								"平和島",
-								1,
-								1,
-								3,
-								2,
-								180));
-
-				raceResults.add(
-						new RaceResult(
-								"2026-09-25",
-								"平和島",
-								2,
-								2,
-								1,
-								4,
-								320));
-
-				raceResults.add(
-						new RaceResult(
-								"2026-09-25",
-								"平和島",
-								3,
-								1,
-								4,
-								3,
-								150));
-
-				raceResults.add(
-						new RaceResult(
-								"2026-09-25",
-								"平和島",
-								4,
-								3,
-								5,
-								1,
-								470));
-
-				raceResults.add(
-						new RaceResult(
-								"2026-09-25",
-								"平和島",
-								5,
-								1,
-								2,
-								6,
-								130));
 
 				SimulationService simulationService = new SimulationService();
 
@@ -229,6 +192,7 @@ public class Main {
 							"現在は単勝戦略のみシミュレーションできます。");
 
 					System.out.println();
+
 					continue;
 				}
 
@@ -278,6 +242,33 @@ public class Main {
 				System.out.println();
 
 			} else if (menuChoice == 3) {
+
+				System.out.println("===== レースデータCSVインポート =====");
+				System.out.println();
+
+				try {
+
+					raceResults = CsvLoader.loadRaceResults(
+							"data/race_results.csv");
+
+					System.out.println("CSVを読み込みました.");
+					System.out.println(
+							"読み込み件数: "
+									+ raceResults.size()
+									+ "レース");
+
+					System.out.println();
+
+				} catch (IOException e) {
+
+					System.out.println(
+							"CSVの読み込みに失敗しました。");
+
+					System.out.println(
+							"エラー: " + e.getMessage());
+
+					System.out.println();
+				}
 
 			} else if (menuChoice == 0) {
 
