@@ -371,10 +371,8 @@ public class Main {
 				String newName = scanner.nextLine();
 
 				System.out.println();
-				System.out.println("新しい1点賭け金を入力してください。");
-				System.out.print("> ");
-
-				int newStake = scanner.nextInt();
+				System.out.print("新しい");
+				int newStake = inputStake(scanner);
 
 				System.out.println();
 				if (strategyService01.updateStrategy(strategy.getStrategyId(), newName,
@@ -705,10 +703,7 @@ public class Main {
 		System.out.println();
 
 		// 賭け金
-		System.out.println("1点あたりの賭け金を入力してください。");
-		System.out.print("> ");
-
-		int stake = scanner.nextInt();
+		int stake = inputStake(scanner);
 
 		// Strategy生成
 		Strategy newStrategy = new Strategy(
@@ -759,5 +754,35 @@ public class Main {
 		}
 
 		return choices;
+	}
+
+	public static int inputStake(Scanner scanner) {
+
+		while (true) {
+
+			System.out.println(
+					"1点あたりの賭け金を入力してください。");
+			System.out.print("> ");
+
+			if (!scanner.hasNextInt()) {
+
+				System.out.println(
+						"数字を入力してください。");
+
+				scanner.next();
+				continue;
+			}
+
+			int stake = scanner.nextInt();
+
+			if (stake >= 100
+					&& stake % 100 == 0) {
+
+				return stake;
+			}
+
+			System.out.println(
+					"100円以上、100円単位で入力してください。");
+		}
 	}
 }

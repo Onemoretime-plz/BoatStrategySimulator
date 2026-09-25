@@ -235,8 +235,6 @@ public class SimulationService {
 					raceResult);
 		}
 
-		// ここから下は既存処理
-
 		if (strategy.getFirstChoices().isEmpty()
 				|| strategy.getSecondChoices().isEmpty()) {
 			return null;
