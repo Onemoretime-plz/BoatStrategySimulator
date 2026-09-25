@@ -6,7 +6,10 @@ import java.util.Scanner;
 
 import model.BetStyle;
 import model.BetType;
+import model.RaceResult;
+import model.SimulationSummary;
 import model.Strategy;
+import service.SimulationService;
 import service.StrategyService;
 
 public class Main {
@@ -144,6 +147,136 @@ public class Main {
 
 			} else if (menuChoice == 2) {
 
+				System.out.println("===== シミュレーション =====");
+				System.out.println();
+
+				System.out.println("使用する戦略IDを入力してください。");
+				System.out.print("> ");
+
+				int strategyId = scanner.nextInt();
+
+				Strategy selectedStrategy = strategyService01.findById(strategyId);
+
+				if (selectedStrategy == null) {
+
+					System.out.println("戦略が見つかりません。");
+					System.out.println();
+					continue;
+				}
+
+				// 仮レースデータ
+				List<RaceResult> raceResults = new ArrayList<>();
+
+				raceResults.add(
+						new RaceResult(
+								"2026-09-25",
+								"平和島",
+								1,
+								1,
+								3,
+								2,
+								180));
+
+				raceResults.add(
+						new RaceResult(
+								"2026-09-25",
+								"平和島",
+								2,
+								2,
+								1,
+								4,
+								320));
+
+				raceResults.add(
+						new RaceResult(
+								"2026-09-25",
+								"平和島",
+								3,
+								1,
+								4,
+								3,
+								150));
+
+				raceResults.add(
+						new RaceResult(
+								"2026-09-25",
+								"平和島",
+								4,
+								3,
+								5,
+								1,
+								470));
+
+				raceResults.add(
+						new RaceResult(
+								"2026-09-25",
+								"平和島",
+								5,
+								1,
+								2,
+								6,
+								130));
+
+				SimulationService simulationService = new SimulationService();
+
+				SimulationSummary summary = simulationService.simulateWinAll(
+						selectedStrategy,
+						raceResults);
+
+				if (summary == null) {
+
+					System.out.println(
+							"現在は単勝戦略のみシミュレーションできます。");
+
+					System.out.println();
+					continue;
+				}
+
+				System.out.println();
+				System.out.println(
+						"===== シミュレーション結果 =====");
+
+				System.out.println();
+
+				System.out.println(
+						"対象レース数: "
+								+ summary.getRaceCount());
+
+				System.out.println(
+						"的中数: "
+								+ summary.getHitCount());
+
+				System.out.println(
+						"的中率: "
+								+ String.format(
+										"%.1f",
+										summary.getHitRate())
+								+ "%");
+
+				System.out.println(
+						"総投資額: "
+								+ summary.getTotalBetAmount()
+								+ "円");
+
+				System.out.println(
+						"総払戻額: "
+								+ summary.getTotalPayout()
+								+ "円");
+
+				System.out.println(
+						"総損益: "
+								+ summary.getTotalProfit()
+								+ "円");
+
+				System.out.println(
+						"回収率: "
+								+ String.format(
+										"%.1f",
+										summary.getReturnRate())
+								+ "%");
+
+				System.out.println();
+
 			} else if (menuChoice == 3) {
 
 			} else if (menuChoice == 0) {
@@ -156,6 +289,7 @@ public class Main {
 			}
 		}
 		scanner.close();
+
 	}
 
 	public static void showMainMenu() {
