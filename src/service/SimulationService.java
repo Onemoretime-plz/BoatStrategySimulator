@@ -3,6 +3,7 @@ package service;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.BetStyle;
 import model.BetType;
 import model.RaceResult;
 import model.SimulationResult;
@@ -227,6 +228,15 @@ public class SimulationService {
 			return null;
 		}
 
+		if (strategy.getBetStyle() == BetStyle.BOX) {
+
+			return simulateExactaBox(
+					strategy,
+					raceResult);
+		}
+
+		// ここから下は既存処理
+
 		if (strategy.getFirstChoices().isEmpty()
 				|| strategy.getSecondChoices().isEmpty()) {
 			return null;
@@ -280,6 +290,13 @@ public class SimulationService {
 
 		if (strategy.getBetType() != BetType.TRIFECTA) {
 			return null;
+		}
+
+		if (strategy.getBetStyle() == BetStyle.BOX) {
+
+			return simulateTrifectaBox(
+					strategy,
+					raceResult);
 		}
 
 		if (strategy.getFirstChoices().isEmpty()
@@ -343,6 +360,13 @@ public class SimulationService {
 
 		if (strategy.getBetType() != BetType.QUINELLA) {
 			return null;
+		}
+
+		if (strategy.getBetStyle() == BetStyle.BOX) {
+
+			return simulateQuinellaBox(
+					strategy,
+					raceResult);
 		}
 
 		if (strategy.getFirstChoices().isEmpty()
@@ -416,6 +440,13 @@ public class SimulationService {
 
 		if (strategy.getBetType() != BetType.TRIO) {
 			return null;
+		}
+
+		if (strategy.getBetStyle() == BetStyle.BOX) {
+
+			return simulateTrioBox(
+					strategy,
+					raceResult);
 		}
 
 		if (strategy.getFirstChoices().isEmpty()
@@ -503,5 +534,210 @@ public class SimulationService {
 				betAmount,
 				payout,
 				profit);
+	}
+
+	public SimulationResult simulateExactaBox(
+			Strategy strategy,
+			RaceResult raceResult) {
+
+		List<Integer> boats = strategy.getFirstChoices();
+
+		int ticketCount = 0;
+		boolean hit = false;
+
+		for (int first : boats) {
+
+			for (int second : boats) {
+
+				if (first == second) {
+					continue;
+				}
+
+				ticketCount++;
+
+				if (first == raceResult.getFirst()
+						&& second == raceResult.getSecond()) {
+
+					hit = true;
+				}
+			}
+		}
+
+		int betAmount = strategy.getStake() * ticketCount;
+
+		int payout = 0;
+
+		if (hit) {
+
+			payout = raceResult.getExactaPayout()
+					* strategy.getStake()
+					/ 100;
+		}
+
+		return new SimulationResult(
+				hit,
+				betAmount,
+				payout,
+				payout - betAmount);
+	}
+
+	public SimulationResult simulateTrifectaBox(
+			Strategy strategy,
+			RaceResult raceResult) {
+
+		List<Integer> boats = strategy.getFirstChoices();
+
+		int ticketCount = 0;
+		boolean hit = false;
+
+		for (int first : boats) {
+
+			for (int second : boats) {
+
+				for (int third : boats) {
+
+					if (first == second
+							|| first == third
+							|| second == third) {
+
+						continue;
+					}
+
+					ticketCount++;
+
+					if (first == raceResult.getFirst()
+							&& second == raceResult.getSecond()
+							&& third == raceResult.getThird()) {
+
+						hit = true;
+					}
+				}
+			}
+		}
+
+		int betAmount = strategy.getStake() * ticketCount;
+
+		int payout = 0;
+
+		if (hit) {
+
+			payout = raceResult.getTrifectaPayout()
+					* strategy.getStake()
+					/ 100;
+		}
+
+		return new SimulationResult(
+				hit,
+				betAmount,
+				payout,
+				payout - betAmount);
+	}
+
+	public SimulationResult simulateQuinellaBox(
+			Strategy strategy,
+			RaceResult raceResult) {
+
+		List<Integer> boats = strategy.getFirstChoices();
+
+		int ticketCount = 0;
+		boolean hit = false;
+
+		for (int i = 0; i < boats.size(); i++) {
+
+			for (int j = i + 1; j < boats.size(); j++) {
+
+				int boat1 = boats.get(i);
+				int boat2 = boats.get(j);
+
+				ticketCount++;
+
+				if ((boat1 == raceResult.getFirst()
+						&& boat2 == raceResult.getSecond())
+						||
+						(boat1 == raceResult.getSecond()
+								&& boat2 == raceResult.getFirst())) {
+
+					hit = true;
+				}
+			}
+		}
+
+		int betAmount = strategy.getStake() * ticketCount;
+
+		int payout = 0;
+
+		if (hit) {
+
+			payout = raceResult.getQuinellaPayout()
+					* strategy.getStake()
+					/ 100;
+		}
+
+		return new SimulationResult(
+				hit,
+				betAmount,
+				payout,
+				payout - betAmount);
+	}
+
+	public SimulationResult simulateTrioBox(
+			Strategy strategy,
+			RaceResult raceResult) {
+
+		List<Integer> boats = strategy.getFirstChoices();
+
+		int ticketCount = 0;
+		boolean hit = false;
+
+		for (int i = 0; i < boats.size(); i++) {
+
+			for (int j = i + 1; j < boats.size(); j++) {
+
+				for (int k = j + 1; k < boats.size(); k++) {
+
+					int boat1 = boats.get(i);
+					int boat2 = boats.get(j);
+					int boat3 = boats.get(k);
+
+					ticketCount++;
+
+					boolean firstHit = raceResult.getFirst() == boat1
+							|| raceResult.getFirst() == boat2
+							|| raceResult.getFirst() == boat3;
+
+					boolean secondHit = raceResult.getSecond() == boat1
+							|| raceResult.getSecond() == boat2
+							|| raceResult.getSecond() == boat3;
+
+					boolean thirdHit = raceResult.getThird() == boat1
+							|| raceResult.getThird() == boat2
+							|| raceResult.getThird() == boat3;
+
+					if (firstHit
+							&& secondHit
+							&& thirdHit) {
+
+						hit = true;
+					}
+				}
+			}
+		}
+
+		int betAmount = strategy.getStake() * ticketCount;
+
+		int payout = 0;
+
+		if (hit) {
+
+			payout = raceResult.getTrioPayout()
+					* strategy.getStake()
+					/ 100;
+		}
+
+		return new SimulationResult(
+				hit,
+				betAmount,
+				payout,
+				payout - betAmount);
 	}
 }

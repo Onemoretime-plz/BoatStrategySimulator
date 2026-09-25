@@ -538,9 +538,7 @@ public class Main {
 
 		} else if (betStyleChoice == 3) {
 
-			System.out.println();
-			System.out.println("BOX登録は後に実装します。");
-			return;
+			betStyle = BetStyle.BOX;
 
 		} else {
 
@@ -688,6 +686,20 @@ public class Main {
 						scanner,
 						"3艇目の候補を入力してください。");
 			}
+		} else if (betStyle == BetStyle.BOX) {
+
+			if (betType == BetType.WIN
+					|| betType == BetType.PLACE) {
+
+				System.out.println(
+						"単勝・複勝ではBOXを使用できません。");
+
+				return;
+			}
+
+			firstChoices = inputBoatChoices(
+					scanner,
+					"BOXで使用する艇を入力してください。");
 		}
 
 		System.out.println();
