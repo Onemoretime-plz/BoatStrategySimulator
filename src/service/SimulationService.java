@@ -1,8 +1,11 @@
 package service;
 
+import java.util.List;
+
 import model.BetType;
 import model.RaceResult;
 import model.SimulationResult;
+import model.SimulationSummary;
 import model.Strategy;
 
 public class SimulationService {
@@ -11,12 +14,10 @@ public class SimulationService {
 			Strategy strategy,
 			RaceResult raceResult) {
 
-		// 単勝戦略以外は処理しない
 		if (strategy.getBetType() != BetType.WIN) {
 			return null;
 		}
 
-		// 買い目が存在しない場合
 		if (strategy.getFirstChoices().isEmpty()) {
 			return null;
 		}
@@ -43,5 +44,42 @@ public class SimulationService {
 				betAmount,
 				payout,
 				profit);
+	}
+
+	public SimulationSummary simulateWinAll(
+			Strategy strategy,
+			List<RaceResult> raceResults) {
+
+		if (strategy.getBetType() != BetType.WIN) {
+			return null;
+		}
+
+		int hitCount = 0;
+		int totalBetAmount = 0;
+		int totalPayout = 0;
+
+		for (RaceResult raceResult : raceResults) {
+
+			SimulationResult result = simulateWin(
+					strategy,
+					raceResult);
+
+			if (result.isHit()) {
+				hitCount++;
+			}
+
+			totalBetAmount += result.getBetAmount();
+
+			totalPayout += result.getPayout();
+		}
+
+		int totalProfit = totalPayout - totalBetAmount;
+
+		return new SimulationSummary(
+				raceResults.size(),
+				hitCount,
+				totalBetAmount,
+				totalPayout,
+				totalProfit);
 	}
 }
