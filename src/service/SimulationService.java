@@ -1,5 +1,6 @@
 package service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import model.BetType;
@@ -231,21 +232,36 @@ public class SimulationService {
 			return null;
 		}
 
-		int selectedFirst = strategy.getFirstChoices().get(0);
+		int ticketCount = 0;
+		boolean hit = false;
 
-		int selectedSecond = strategy.getSecondChoices().get(0);
+		for (int first : strategy.getFirstChoices()) {
 
-		int betAmount = strategy.getStake();
+			for (int second : strategy.getSecondChoices()) {
 
-		boolean hit = selectedFirst == raceResult.getFirst()
-				&& selectedSecond == raceResult.getSecond();
+				// 同じ艇同士の買い目は除外
+				if (first == second) {
+					continue;
+				}
+
+				ticketCount++;
+
+				if (first == raceResult.getFirst()
+						&& second == raceResult.getSecond()) {
+
+					hit = true;
+				}
+			}
+		}
+
+		int betAmount = strategy.getStake() * ticketCount;
 
 		int payout = 0;
 
 		if (hit) {
 
 			payout = raceResult.getExactaPayout()
-					* betAmount
+					* strategy.getStake()
 					/ 100;
 		}
 
@@ -272,24 +288,43 @@ public class SimulationService {
 			return null;
 		}
 
-		int selectedFirst = strategy.getFirstChoices().get(0);
+		int ticketCount = 0;
+		boolean hit = false;
 
-		int selectedSecond = strategy.getSecondChoices().get(0);
+		for (int first : strategy.getFirstChoices()) {
 
-		int selectedThird = strategy.getThirdChoices().get(0);
+			for (int second : strategy.getSecondChoices()) {
 
-		int betAmount = strategy.getStake();
+				for (int third : strategy.getThirdChoices()) {
 
-		boolean hit = selectedFirst == raceResult.getFirst()
-				&& selectedSecond == raceResult.getSecond()
-				&& selectedThird == raceResult.getThird();
+					// 同じ艇を複数着に指定した買い目は除外
+					if (first == second
+							|| first == third
+							|| second == third) {
+
+						continue;
+					}
+
+					ticketCount++;
+
+					if (first == raceResult.getFirst()
+							&& second == raceResult.getSecond()
+							&& third == raceResult.getThird()) {
+
+						hit = true;
+					}
+				}
+			}
+		}
+
+		int betAmount = strategy.getStake() * ticketCount;
 
 		int payout = 0;
 
 		if (hit) {
 
 			payout = raceResult.getTrifectaPayout()
-					* betAmount
+					* strategy.getStake()
 					/ 100;
 		}
 
@@ -315,24 +350,54 @@ public class SimulationService {
 			return null;
 		}
 
-		int selectedBoat1 = strategy.getFirstChoices().get(0);
+		int ticketCount = 0;
+		boolean hit = false;
 
-		int selectedBoat2 = strategy.getSecondChoices().get(0);
+		List<String> generatedTickets = new ArrayList<>();
 
-		int betAmount = strategy.getStake();
+		for (int boat1 : strategy.getFirstChoices()) {
 
-		boolean hit = (selectedBoat1 == raceResult.getFirst()
-				&& selectedBoat2 == raceResult.getSecond())
-				||
-				(selectedBoat1 == raceResult.getSecond()
-						&& selectedBoat2 == raceResult.getFirst());
+			for (int boat2 : strategy.getSecondChoices()) {
+
+				// 同じ艇同士は成立しない
+				if (boat1 == boat2) {
+					continue;
+				}
+
+				// 2連複は順不同なので小さい艇番を先にする
+				int minBoat = Math.min(boat1, boat2);
+				int maxBoat = Math.max(boat1, boat2);
+
+				String ticket = minBoat + "-" + maxBoat;
+
+				// 同じ買い目の重複を防ぐ
+				if (generatedTickets.contains(ticket)) {
+					continue;
+				}
+
+				generatedTickets.add(ticket);
+				ticketCount++;
+
+				boolean ticketHit = (minBoat == raceResult.getFirst()
+						&& maxBoat == raceResult.getSecond())
+						||
+						(minBoat == raceResult.getSecond()
+								&& maxBoat == raceResult.getFirst());
+
+				if (ticketHit) {
+					hit = true;
+				}
+			}
+		}
+
+		int betAmount = strategy.getStake() * ticketCount;
 
 		int payout = 0;
 
 		if (hit) {
 
 			payout = raceResult.getQuinellaPayout()
-					* betAmount
+					* strategy.getStake()
 					/ 100;
 		}
 
@@ -359,36 +424,75 @@ public class SimulationService {
 			return null;
 		}
 
-		int selectedBoat1 = strategy.getFirstChoices().get(0);
+		int ticketCount = 0;
+		boolean hit = false;
 
-		int selectedBoat2 = strategy.getSecondChoices().get(0);
+		List<String> generatedTickets = new ArrayList<>();
 
-		int selectedBoat3 = strategy.getThirdChoices().get(0);
+		for (int boat1 : strategy.getFirstChoices()) {
 
-		int betAmount = strategy.getStake();
+			for (int boat2 : strategy.getSecondChoices()) {
 
-		boolean boat1Hit = selectedBoat1 == raceResult.getFirst()
-				|| selectedBoat1 == raceResult.getSecond()
-				|| selectedBoat1 == raceResult.getThird();
+				for (int boat3 : strategy.getThirdChoices()) {
 
-		boolean boat2Hit = selectedBoat2 == raceResult.getFirst()
-				|| selectedBoat2 == raceResult.getSecond()
-				|| selectedBoat2 == raceResult.getThird();
+					// 同じ艇を含む組み合わせは除外
+					if (boat1 == boat2
+							|| boat1 == boat3
+							|| boat2 == boat3) {
 
-		boolean boat3Hit = selectedBoat3 == raceResult.getFirst()
-				|| selectedBoat3 == raceResult.getSecond()
-				|| selectedBoat3 == raceResult.getThird();
+						continue;
+					}
 
-		boolean hit = boat1Hit
-				&& boat2Hit
-				&& boat3Hit;
+					// 3艇を小さい順に並べる
+					List<Integer> boats = new ArrayList<>();
+
+					boats.add(boat1);
+					boats.add(boat2);
+					boats.add(boat3);
+
+					boats.sort(null);
+
+					String ticket = boats.get(0)
+							+ "-"
+							+ boats.get(1)
+							+ "-"
+							+ boats.get(2);
+
+					// 同じ組み合わせを二重に数えない
+					if (generatedTickets.contains(ticket)) {
+						continue;
+					}
+
+					generatedTickets.add(ticket);
+					ticketCount++;
+
+					boolean firstHit = boats.contains(
+							raceResult.getFirst());
+
+					boolean secondHit = boats.contains(
+							raceResult.getSecond());
+
+					boolean thirdHit = boats.contains(
+							raceResult.getThird());
+
+					if (firstHit
+							&& secondHit
+							&& thirdHit) {
+
+						hit = true;
+					}
+				}
+			}
+		}
+
+		int betAmount = strategy.getStake() * ticketCount;
 
 		int payout = 0;
 
 		if (hit) {
 
 			payout = raceResult.getTrioPayout()
-					* betAmount
+					* strategy.getStake()
 					/ 100;
 		}
 
