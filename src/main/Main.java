@@ -182,14 +182,14 @@ public class Main {
 
 				SimulationService simulationService = new SimulationService();
 
-				SimulationSummary summary = simulationService.simulateWinAll(
+				SimulationSummary summary = simulationService.simulateAll(
 						selectedStrategy,
 						raceResults);
 
 				if (summary == null) {
 
 					System.out.println(
-							"現在は単勝戦略のみシミュレーションできます。");
+							"この券種は現在シミュレーションに対応していません。");
 
 					System.out.println();
 
