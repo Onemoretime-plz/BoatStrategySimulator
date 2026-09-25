@@ -127,7 +127,9 @@ public class Main {
 
 					} else if (strategyMenuChoice == 3) {
 
-						System.out.println("新規戦略登録");
+						createStrategy(
+								scanner,
+								strategyService01);
 
 					} else if (strategyMenuChoice == 0) {
 
@@ -143,10 +145,6 @@ public class Main {
 			} else if (menuChoice == 2) {
 
 			} else if (menuChoice == 3) {
-
-				createStrategy(
-						scanner,
-						strategyService01);
 
 			} else if (menuChoice == 0) {
 
@@ -408,13 +406,13 @@ public class Main {
 		} else if (betStyleChoice == 2) {
 
 			System.out.println();
-			System.out.println("フォーメーション登録は後のSTEPで実装します。");
+			System.out.println("フォーメーション登録は後に実装します。");
 			return;
 
 		} else if (betStyleChoice == 3) {
 
 			System.out.println();
-			System.out.println("BOX登録は後のSTEPで実装します。");
+			System.out.println("BOX登録は後に実装します。");
 			return;
 
 		} else {

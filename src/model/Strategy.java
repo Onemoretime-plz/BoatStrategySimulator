@@ -33,6 +33,7 @@ public class Strategy {
 		this.firstChoices = firstChoices;
 		this.secondChoices = secondChoices;
 		this.thirdChoices = thirdChoices;
+		this.stake = stake;
 	}
 
 	public int getStrategyId() {
