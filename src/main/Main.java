@@ -1,5 +1,6 @@
 package main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -11,6 +12,7 @@ import model.SimulationSummary;
 import model.Strategy;
 import service.SimulationService;
 import service.StrategyService;
+import util.CsvLoader;
 
 public class Main {
 
@@ -18,6 +20,9 @@ public class Main {
 		Scanner scanner = new Scanner(System.in);
 
 		StrategyService strategyService01 = new StrategyService();
+
+		// 読み込んだレースデータを保持
+		List<RaceResult> raceResults = new ArrayList<>();
 
 		// サンプル戦略01インスタンス化
 		Strategy strategy01 = new Strategy(
@@ -150,6 +155,16 @@ public class Main {
 				System.out.println("===== シミュレーション =====");
 				System.out.println();
 
+				// CSVが読み込まれているか確認
+				if (raceResults.isEmpty()) {
+
+					System.out.println("レースデータがありません。");
+					System.out.println("先にCSVをインポートしてください。");
+					System.out.println();
+
+					continue;
+				}
+
 				System.out.println("使用する戦略IDを入力してください。");
 				System.out.print("> ");
 
@@ -161,74 +176,23 @@ public class Main {
 
 					System.out.println("戦略が見つかりません。");
 					System.out.println();
+
 					continue;
 				}
 
-				// 仮レースデータ
-				List<RaceResult> raceResults = new ArrayList<>();
-
-				raceResults.add(
-						new RaceResult(
-								"2026-09-25",
-								"平和島",
-								1,
-								1,
-								3,
-								2,
-								180));
-
-				raceResults.add(
-						new RaceResult(
-								"2026-09-25",
-								"平和島",
-								2,
-								2,
-								1,
-								4,
-								320));
-
-				raceResults.add(
-						new RaceResult(
-								"2026-09-25",
-								"平和島",
-								3,
-								1,
-								4,
-								3,
-								150));
-
-				raceResults.add(
-						new RaceResult(
-								"2026-09-25",
-								"平和島",
-								4,
-								3,
-								5,
-								1,
-								470));
-
-				raceResults.add(
-						new RaceResult(
-								"2026-09-25",
-								"平和島",
-								5,
-								1,
-								2,
-								6,
-								130));
-
 				SimulationService simulationService = new SimulationService();
 
-				SimulationSummary summary = simulationService.simulateWinAll(
+				SimulationSummary summary = simulationService.simulateAll(
 						selectedStrategy,
 						raceResults);
 
 				if (summary == null) {
 
 					System.out.println(
-							"現在は単勝戦略のみシミュレーションできます。");
+							"この券種は現在シミュレーションに対応していません。");
 
 					System.out.println();
+
 					continue;
 				}
 
@@ -236,6 +200,10 @@ public class Main {
 				System.out.println(
 						"===== シミュレーション結果 =====");
 
+				System.out.println();
+
+				System.out.print("使用戦略：");
+				System.out.println(selectedStrategy.getStrategyName());
 				System.out.println();
 
 				System.out.println(
@@ -278,6 +246,33 @@ public class Main {
 				System.out.println();
 
 			} else if (menuChoice == 3) {
+
+				System.out.println("===== レースデータCSVインポート =====");
+				System.out.println();
+
+				try {
+
+					raceResults = CsvLoader.loadRaceResults(
+							"data/race_results.csv");
+
+					System.out.println("CSVを読み込みました.");
+					System.out.println(
+							"読み込み件数: "
+									+ raceResults.size()
+									+ "レース");
+
+					System.out.println();
+
+				} catch (IOException e) {
+
+					System.out.println(
+							"CSVの読み込みに失敗しました。");
+
+					System.out.println(
+							"エラー: " + e.getMessage());
+
+					System.out.println();
+				}
 
 			} else if (menuChoice == 0) {
 
@@ -539,15 +534,11 @@ public class Main {
 
 		} else if (betStyleChoice == 2) {
 
-			System.out.println();
-			System.out.println("フォーメーション登録は後に実装します。");
-			return;
+			betStyle = BetStyle.FORMATION;
 
 		} else if (betStyleChoice == 3) {
 
-			System.out.println();
-			System.out.println("BOX登録は後に実装します。");
-			return;
+			betStyle = BetStyle.BOX;
 
 		} else {
 
@@ -556,93 +547,159 @@ public class Main {
 		}
 
 		// 買い目格納用List
+		// 買い目格納用List
 		List<Integer> firstChoices = new ArrayList<>();
 		List<Integer> secondChoices = new ArrayList<>();
 		List<Integer> thirdChoices = new ArrayList<>();
 
 		System.out.println();
 
-		// 券種によって買い目入力を変更
-		if (betType == BetType.WIN || betType == BetType.PLACE) {
+		if (betStyle == BetStyle.NORMAL) {
 
-			System.out.println("艇番を入力してください。");
-			System.out.print("> ");
+			if (betType == BetType.WIN || betType == BetType.PLACE) {
 
-			int boat = scanner.nextInt();
+				System.out.println("艇番を入力してください。");
+				System.out.print("> ");
 
-			firstChoices.add(boat);
+				int boat = scanner.nextInt();
 
-		} else if (betType == BetType.EXACTA) {
+				firstChoices.add(boat);
 
-			System.out.println("1着艇を入力してください。");
-			System.out.print("> ");
+			} else if (betType == BetType.EXACTA) {
 
-			int first = scanner.nextInt();
+				System.out.println("1着艇を入力してください。");
+				System.out.print("> ");
+				int first = scanner.nextInt();
 
-			System.out.println("2着艇を入力してください。");
-			System.out.print("> ");
+				System.out.println("2着艇を入力してください。");
+				System.out.print("> ");
+				int second = scanner.nextInt();
 
-			int second = scanner.nextInt();
+				firstChoices.add(first);
+				secondChoices.add(second);
 
-			firstChoices.add(first);
-			secondChoices.add(second);
+			} else if (betType == BetType.TRIFECTA) {
 
-		} else if (betType == BetType.TRIFECTA) {
+				System.out.println("1着艇を入力してください。");
+				System.out.print("> ");
+				int first = scanner.nextInt();
 
-			System.out.println("1着艇を入力してください。");
-			System.out.print("> ");
+				System.out.println("2着艇を入力してください。");
+				System.out.print("> ");
+				int second = scanner.nextInt();
 
-			int first = scanner.nextInt();
+				System.out.println("3着艇を入力してください。");
+				System.out.print("> ");
+				int third = scanner.nextInt();
 
-			System.out.println("2着艇を入力してください。");
-			System.out.print("> ");
+				firstChoices.add(first);
+				secondChoices.add(second);
+				thirdChoices.add(third);
 
-			int second = scanner.nextInt();
+			} else if (betType == BetType.QUINELLA) {
 
-			System.out.println("3着艇を入力してください。");
-			System.out.print("> ");
+				System.out.println("1艇目を入力してください。");
+				System.out.print("> ");
+				int first = scanner.nextInt();
 
-			int third = scanner.nextInt();
+				System.out.println("2艇目を入力してください。");
+				System.out.print("> ");
+				int second = scanner.nextInt();
 
-			firstChoices.add(first);
-			secondChoices.add(second);
-			thirdChoices.add(third);
+				firstChoices.add(first);
+				secondChoices.add(second);
 
-		} else if (betType == BetType.QUINELLA) {
+			} else if (betType == BetType.TRIO) {
 
-			System.out.println("1艇目を入力してください。");
-			System.out.print("> ");
+				System.out.println("1艇目を入力してください。");
+				System.out.print("> ");
+				int first = scanner.nextInt();
 
-			int first = scanner.nextInt();
+				System.out.println("2艇目を入力してください。");
+				System.out.print("> ");
+				int second = scanner.nextInt();
 
-			System.out.println("2艇目を入力してください。");
-			System.out.print("> ");
+				System.out.println("3艇目を入力してください。");
+				System.out.print("> ");
+				int third = scanner.nextInt();
 
-			int second = scanner.nextInt();
+				firstChoices.add(first);
+				secondChoices.add(second);
+				thirdChoices.add(third);
+			}
 
-			firstChoices.add(first);
-			secondChoices.add(second);
+		} else if (betStyle == BetStyle.FORMATION) {
 
-		} else if (betType == BetType.TRIO) {
+			if (betType == BetType.WIN
+					|| betType == BetType.PLACE) {
 
-			System.out.println("1艇目を入力してください。");
-			System.out.print("> ");
+				System.out.println(
+						"単勝・複勝ではフォーメーションを使用できません。");
 
-			int first = scanner.nextInt();
+				return;
 
-			System.out.println("2艇目を入力してください。");
-			System.out.print("> ");
+			} else if (betType == BetType.EXACTA) {
 
-			int second = scanner.nextInt();
+				firstChoices = inputBoatChoices(
+						scanner,
+						"1着候補を入力してください。");
 
-			System.out.println("3艇目を入力してください。");
-			System.out.print("> ");
+				secondChoices = inputBoatChoices(
+						scanner,
+						"2着候補を入力してください。");
 
-			int third = scanner.nextInt();
+			} else if (betType == BetType.TRIFECTA) {
 
-			firstChoices.add(first);
-			secondChoices.add(second);
-			thirdChoices.add(third);
+				firstChoices = inputBoatChoices(
+						scanner,
+						"1着候補を入力してください。");
+
+				secondChoices = inputBoatChoices(
+						scanner,
+						"2着候補を入力してください。");
+
+				thirdChoices = inputBoatChoices(
+						scanner,
+						"3着候補を入力してください。");
+
+			} else if (betType == BetType.QUINELLA) {
+
+				firstChoices = inputBoatChoices(
+						scanner,
+						"1艇目の候補を入力してください。");
+
+				secondChoices = inputBoatChoices(
+						scanner,
+						"2艇目の候補を入力してください。");
+
+			} else if (betType == BetType.TRIO) {
+
+				firstChoices = inputBoatChoices(
+						scanner,
+						"1艇目の候補を入力してください。");
+
+				secondChoices = inputBoatChoices(
+						scanner,
+						"2艇目の候補を入力してください。");
+
+				thirdChoices = inputBoatChoices(
+						scanner,
+						"3艇目の候補を入力してください。");
+			}
+		} else if (betStyle == BetStyle.BOX) {
+
+			if (betType == BetType.WIN
+					|| betType == BetType.PLACE) {
+
+				System.out.println(
+						"単勝・複勝ではBOXを使用できません。");
+
+				return;
+			}
+
+			firstChoices = inputBoatChoices(
+					scanner,
+					"BOXで使用する艇を入力してください。");
 		}
 
 		System.out.println();
@@ -674,5 +731,33 @@ public class Main {
 		System.out.println("戦略名: " + newStrategy.getStrategyName());
 		System.out.println();
 
+	}
+
+	public static List<Integer> inputBoatChoices(
+			Scanner scanner,
+			String message) {
+
+		List<Integer> choices = new ArrayList<>();
+
+		System.out.println(message);
+		System.out.println(
+				"艇番を続けて入力してください。");
+		System.out.println(
+				"入力を終了する場合は0を入力してください。");
+
+		while (true) {
+
+			System.out.print("> ");
+
+			int boat = scanner.nextInt();
+
+			if (boat == 0) {
+				break;
+			}
+
+			choices.add(boat);
+		}
+
+		return choices;
 	}
 }
