@@ -144,6 +144,10 @@ public class Main {
 
 			} else if (menuChoice == 3) {
 
+				createStrategy(
+						scanner,
+						strategyService01);
+
 			} else if (menuChoice == 0) {
 
 				System.out.println("終了します。");
@@ -313,6 +317,230 @@ public class Main {
 				System.out.println();
 			}
 		}
+
+	}
+
+	public static void createStrategy(
+			Scanner scanner,
+			StrategyService strategyService01) {
+
+		System.out.println("===== 新規戦略登録 =====");
+		System.out.println();
+
+		int newId = strategyService01.getNextId();
+
+		scanner.nextLine();
+
+		// 戦略名
+		System.out.println("戦略名を入力してください。");
+		System.out.print("> ");
+
+		String strategyName = scanner.nextLine();
+
+		System.out.println();
+
+		// 券種
+		System.out.println("券種を選択してください。");
+		System.out.println();
+		System.out.println("1. 単勝");
+		System.out.println("2. 複勝");
+		System.out.println("3. 2連単");
+		System.out.println("4. 3連単");
+		System.out.println("5. 2連複");
+		System.out.println("6. 3連複");
+		System.out.println();
+		System.out.print("> ");
+
+		int betTypeChoice = scanner.nextInt();
+
+		BetType betType;
+
+		switch (betTypeChoice) {
+
+		case 1:
+			betType = BetType.WIN;
+			break;
+
+		case 2:
+			betType = BetType.PLACE;
+			break;
+
+		case 3:
+			betType = BetType.EXACTA;
+			break;
+
+		case 4:
+			betType = BetType.TRIFECTA;
+			break;
+
+		case 5:
+			betType = BetType.QUINELLA;
+			break;
+
+		case 6:
+			betType = BetType.TRIO;
+			break;
+
+		default:
+			System.out.println("1から6を入力してください。");
+			return;
+		}
+
+		System.out.println();
+
+		// 買い方
+		System.out.println("買い方を選択してください。");
+		System.out.println();
+		System.out.println("1. 通常");
+		System.out.println("2. フォーメーション");
+		System.out.println("3. BOX");
+		System.out.println();
+		System.out.print("> ");
+
+		int betStyleChoice = scanner.nextInt();
+
+		BetStyle betStyle;
+
+		if (betStyleChoice == 1) {
+
+			betStyle = BetStyle.NORMAL;
+
+		} else if (betStyleChoice == 2) {
+
+			System.out.println();
+			System.out.println("フォーメーション登録は後のSTEPで実装します。");
+			return;
+
+		} else if (betStyleChoice == 3) {
+
+			System.out.println();
+			System.out.println("BOX登録は後のSTEPで実装します。");
+			return;
+
+		} else {
+
+			System.out.println("1から3を入力してください。");
+			return;
+		}
+
+		// 買い目格納用List
+		List<Integer> firstChoices = new ArrayList<>();
+		List<Integer> secondChoices = new ArrayList<>();
+		List<Integer> thirdChoices = new ArrayList<>();
+
+		System.out.println();
+
+		// 券種によって買い目入力を変更
+		if (betType == BetType.WIN || betType == BetType.PLACE) {
+
+			System.out.println("艇番を入力してください。");
+			System.out.print("> ");
+
+			int boat = scanner.nextInt();
+
+			firstChoices.add(boat);
+
+		} else if (betType == BetType.EXACTA) {
+
+			System.out.println("1着艇を入力してください。");
+			System.out.print("> ");
+
+			int first = scanner.nextInt();
+
+			System.out.println("2着艇を入力してください。");
+			System.out.print("> ");
+
+			int second = scanner.nextInt();
+
+			firstChoices.add(first);
+			secondChoices.add(second);
+
+		} else if (betType == BetType.TRIFECTA) {
+
+			System.out.println("1着艇を入力してください。");
+			System.out.print("> ");
+
+			int first = scanner.nextInt();
+
+			System.out.println("2着艇を入力してください。");
+			System.out.print("> ");
+
+			int second = scanner.nextInt();
+
+			System.out.println("3着艇を入力してください。");
+			System.out.print("> ");
+
+			int third = scanner.nextInt();
+
+			firstChoices.add(first);
+			secondChoices.add(second);
+			thirdChoices.add(third);
+
+		} else if (betType == BetType.QUINELLA) {
+
+			System.out.println("1艇目を入力してください。");
+			System.out.print("> ");
+
+			int first = scanner.nextInt();
+
+			System.out.println("2艇目を入力してください。");
+			System.out.print("> ");
+
+			int second = scanner.nextInt();
+
+			firstChoices.add(first);
+			secondChoices.add(second);
+
+		} else if (betType == BetType.TRIO) {
+
+			System.out.println("1艇目を入力してください。");
+			System.out.print("> ");
+
+			int first = scanner.nextInt();
+
+			System.out.println("2艇目を入力してください。");
+			System.out.print("> ");
+
+			int second = scanner.nextInt();
+
+			System.out.println("3艇目を入力してください。");
+			System.out.print("> ");
+
+			int third = scanner.nextInt();
+
+			firstChoices.add(first);
+			secondChoices.add(second);
+			thirdChoices.add(third);
+		}
+
+		System.out.println();
+
+		// 賭け金
+		System.out.println("1点あたりの賭け金を入力してください。");
+		System.out.print("> ");
+
+		int stake = scanner.nextInt();
+
+		// Strategy生成
+		Strategy newStrategy = new Strategy(
+				newId,
+				strategyName,
+				betType,
+				betStyle,
+				firstChoices,
+				secondChoices,
+				thirdChoices,
+				stake);
+
+		// 登録
+		strategyService01.addStrategy(newStrategy);
+
+		System.out.println();
+		System.out.println("戦略を登録しました。");
+		System.out.println();
+		System.out.println("ID: " + newStrategy.getStrategyId());
+		System.out.println("戦略名: " + newStrategy.getStrategyName());
+		System.out.println();
 
 	}
 }
