@@ -381,18 +381,15 @@ public class SimulationService {
 
 			for (int boat2 : strategy.getSecondChoices()) {
 
-				// 同じ艇同士は成立しない
 				if (boat1 == boat2) {
 					continue;
 				}
 
-				// 2連複は順不同なので小さい艇番を先にする
 				int minBoat = Math.min(boat1, boat2);
 				int maxBoat = Math.max(boat1, boat2);
 
 				String ticket = minBoat + "-" + maxBoat;
 
-				// 同じ買い目の重複を防ぐ
 				if (generatedTickets.contains(ticket)) {
 					continue;
 				}
@@ -464,7 +461,6 @@ public class SimulationService {
 
 				for (int boat3 : strategy.getThirdChoices()) {
 
-					// 同じ艇を含む組み合わせは除外
 					if (boat1 == boat2
 							|| boat1 == boat3
 							|| boat2 == boat3) {
@@ -487,7 +483,6 @@ public class SimulationService {
 							+ "-"
 							+ boats.get(2);
 
-					// 同じ組み合わせを二重に数えない
 					if (generatedTickets.contains(ticket)) {
 						continue;
 					}
