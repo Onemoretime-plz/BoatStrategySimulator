@@ -56,4 +56,18 @@ public class StrategyService {
 		return true;
 
 	}
+
+	public int getNextId() {
+
+		int maxId = 0;
+
+		for (Strategy strategy : strategies) {
+
+			if (strategy.getStrategyId() > maxId) {
+				maxId = strategy.getStrategyId();
+			}
+		}
+
+		return maxId + 1;
+	}
 }
