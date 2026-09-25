@@ -202,6 +202,10 @@ public class Main {
 
 				System.out.println();
 
+				System.out.print("使用戦略：");
+				System.out.println(selectedStrategy.getStrategyName());
+				System.out.println();
+
 				System.out.println(
 						"対象レース数: "
 								+ summary.getRaceCount());
