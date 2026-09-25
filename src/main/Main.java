@@ -6,7 +6,10 @@ import java.util.Scanner;
 
 import model.BetStyle;
 import model.BetType;
+import model.RaceResult;
+import model.SimulationResult;
 import model.Strategy;
+import service.SimulationService;
 import service.StrategyService;
 
 public class Main {
@@ -144,6 +147,74 @@ public class Main {
 
 			} else if (menuChoice == 2) {
 
+				System.out.println("===== シミュレーション =====");
+				System.out.println();
+
+				System.out.println("使用する戦略IDを入力してください。");
+				System.out.print("> ");
+
+				int strategyId = scanner.nextInt();
+
+				Strategy selectedStrategy = strategyService01.findById(strategyId);
+
+				if (selectedStrategy == null) {
+
+					System.out.println("戦略が見つかりません。");
+					System.out.println();
+					continue;
+				}
+
+				// 仮のレース結果
+				RaceResult raceResult = new RaceResult(
+						"2026-09-25",
+						"平和島",
+						1,
+						1,
+						3,
+						2,
+						180);
+
+				SimulationService simulationService = new SimulationService();
+
+				SimulationResult result = simulationService.simulateWin(
+						selectedStrategy,
+						raceResult);
+
+				if (result == null) {
+
+					System.out.println(
+							"現在は単勝戦略のみシミュレーションできます。");
+					System.out.println();
+					continue;
+				}
+
+				System.out.println();
+				System.out.println("===== シミュレーション結果 =====");
+				System.out.println();
+
+				System.out.println(
+						"競艇場: " + raceResult.getVenue());
+
+				System.out.println(
+						"レース: " + raceResult.getRaceNo() + "R");
+
+				if (result.isHit()) {
+					System.out.println("結果: 的中");
+				} else {
+					System.out.println("結果: 不的中");
+				}
+
+				System.out.println(
+						"投資額: " + result.getBetAmount() + "円");
+
+				System.out.println(
+						"払戻額: " + result.getPayout() + "円");
+
+				System.out.println(
+						"損益: " + result.getProfit() + "円");
+
+				System.out.println();
+
 			} else if (menuChoice == 3) {
 
 			} else if (menuChoice == 0) {
@@ -156,6 +227,7 @@ public class Main {
 			}
 		}
 		scanner.close();
+
 	}
 
 	public static void showMainMenu() {
