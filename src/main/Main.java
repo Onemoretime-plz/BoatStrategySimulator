@@ -785,4 +785,27 @@ public class Main {
 					"100円以上、100円単位で入力してください。");
 		}
 	}
+
+	public static int inputBoatNumber(
+			Scanner scanner,
+			String message) {
+
+		while (true) {
+			System.out.println(message);
+			System.out.print("> ");
+
+			int boat = scanner.nextInt();
+
+			if (boat > 6 && boat < 1) {
+
+				System.out.println("艇番は1から6までで入力してください。");
+
+				continue;
+			} else {
+				return boat;
+			}
+
+		}
+	}
+
 }
